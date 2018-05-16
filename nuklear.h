@@ -18664,8 +18664,11 @@ nk_group_begin_titled(struct nk_context *ctx, const char *id,
     win = ctx->current;
     id_len = (int)nk_strlen(id);
     id_hash = nk_murmur_hash(id, (int)id_len, NK_PANEL_GROUP);
+        
     x_offset = nk_find_value(win, id_hash);
-    if (!x_offset) {
+    y_offset = nk_find_value(win, id_hash + 1);
+
+    if (!x_offset || !y_offset) {
         x_offset = nk_add_value(ctx, win, id_hash, 0);
         y_offset = nk_add_value(ctx, win, id_hash+1, 0);
 
@@ -18673,7 +18676,7 @@ nk_group_begin_titled(struct nk_context *ctx, const char *id,
         NK_ASSERT(y_offset);
         if (!x_offset || !y_offset) return 0;
         *x_offset = *y_offset = 0;
-    } else y_offset = nk_find_value(win, id_hash+1);
+    }
     return nk_group_scrolled_offset_begin(ctx, x_offset, y_offset, title, flags);
 }
 NK_API int
